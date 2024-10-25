@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Counter</title>
+     <!-- External Style Sheet -->
+     <link rel="stylesheet" href="style.css" />
+     <!--X- External Style Sheet -X-->
+   </head>
+   <body>
+
+    <div id="time">
+        <div class="circle" style="--clr:#fee800">
+            <div class="dots min_dot"></div>
+            <svg>
+                <circle cx="70" cy="70" r="70"></circle>
+                <circle cx="70" cy="70" r="70" id="mm"></circle>
+            </svg>
+            <div id="minutes">00</div>
+            
+        </div>
+    
+        <div class="circle" style="--clr:#04fc43">
+            <div class="dots sec_dot"></div>
+            <svg>
+                <circle cx="70" cy="70" r="70"></circle>
+                <circle cx="70" cy="70" r="70" id="ss"></circle>
+            </svg>
+            <div id="seconds">00</div>
+        </div>
+    
+        <div class="circle" style="--clr:#ffffff">
+            <div class="dots milli_dot"></div>
+            <svg>
+                <circle cx="70" cy="70" r="70"></circle>
+                <circle cx="70" cy="70" r="70" id="ms"></circle>
+            </svg>
+            <div id="milliseconds">000</div>
+        </div>
+    </div>
+    
+    <h2 class="newYear">Time's up!<br><span id="finalMessage">Your moment has passed!</span></h2>
+    
+    <script>
+        let minutes = document.getElementById('minutes');
+        let seconds = document.getElementById('seconds');
+        let milliseconds = document.getElementById('milliseconds');
+        let finalMessage = document.getElementById('finalMessage');
+    
+        let mm = document.getElementById('mm');
+        let ss = document.getElementById('ss');
+        let ms = document.getElementById('ms');
+    
+        let min_dot = document.querySelector('.min_dot');
+        let sec_dot = document.querySelector('.sec_dot');
+        let milli_dot = document.querySelector('.milli_dot');
+    
+        // Set the end time to a specific time, e.g., 8:55 PM today
+        let endDate = new Date();
+        endDate.setHours(5, 46, 0, 0); // 8:55 PM today
+    
+        let x = setInterval(function() {
+            let now = new Date().getTime();
+            let distance = endDate - now;
+    
+            // Calculate minutes, seconds, and milliseconds
+            let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let s = Math.floor((distance % (1000 * 60)) / 1000);
+            let ms_remaining = distance % 1000;
+    
+            // Output result in elements with id
+            minutes.innerHTML = m;
+            seconds.innerHTML = s;
+            milliseconds.innerHTML = ms_remaining;
+    
+            // Animate stroke
+            mm.style.strokeDashoffset = 440 - (440 * m) / 60;
+            ss.style.strokeDashoffset = 440 - (440 * s) / 60;
+            ms.style.strokeDashoffset = 440 - (440 * ms_remaining) / 1000;
+    
+            // Animate circle dots
+            min_dot.style.transform = `rotateZ(${m * 6}deg)`; // 360deg / 60 minutes
+            sec_dot.style.transform = `rotateZ(${s * 6}deg)`; // 360deg / 60 seconds
+            milli_dot.style.transform = `rotateZ(${ms_remaining * 0.36}deg)`; // 360deg / 1000 milliseconds
+    
+            // Display "Three", "Two", "One" and finally "Time's up!"
+            if (s === 3 && ms_remaining === 0) {
+                finalMessage.innerHTML = "Three";
+                document.querySelector(".newYear").style.display = 'block';
+            }
+            if (s === 2 && ms_remaining === 0) {
+                finalMessage.innerHTML = "Two";
+            }
+            if (s === 1 && ms_remaining === 0) {
+                finalMessage.innerHTML = "One";
+            }
+    
+            // If the countdown is over
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("time").style.display = 'none';
+                finalMessage.innerHTML = "Your moment has passed😊";
+                document.querySelector(".newYear").style.display = 'block';
+            }
+        }, 1); // Update every millisecond
+    </script>
+
+   </body>
+</html>
